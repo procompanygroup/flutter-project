@@ -1,0 +1,21 @@
+{
+ "start":"Start",
+ "new_account":"New Account",
+ "login":"Log In",
+ "email":"Email",
+ "register":"Register",
+ "first":"First Name",
+ "last":"Last Name",
+ "username":"UserName",
+ "password":"Password",
+ "personal":"Personal",
+ "change": "Change",
+ "new_":"New",
+ "save":"Save",
+ "confirm":"Confirm",
+ "contribution":"Contribution",
+ "favorite":"Favorite",
+ "location":"Location",
+ "languages":"Languages",
+ "payment":"Payment"
+}
