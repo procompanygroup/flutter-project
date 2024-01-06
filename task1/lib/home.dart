@@ -13,8 +13,14 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    late bool isSelected = false, select = false;
+    late bool select = false;
     List type = ["Villa", "Apartment", "Commercial", "Home"];
+    TextStyle tStyle(bool active) {
+      print(active);
+      //print(isSelected);
+      return TextStyle(color: active ? Colors.deepPurple : Colors.black38);
+    }
+
     final controller = PageController(viewportFraction: 0.8, keepPage: false);
     final pages = List.generate(
         2,
@@ -39,6 +45,7 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ));
+    late int isSelected = 0;
     return Scaffold(
       backgroundColor: Colors.black12,
       body: Column(
@@ -52,31 +59,24 @@ class _HomeState extends State<Home> {
                     bottomRight: Radius.circular(30))),
           ),
           SizedBox(
-            height: size.height * 0.06,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: type.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: TextButton(
+              height: size.height * 0.06,
+              child: Wrap(
+                direction: Axis.horizontal,
+                children: List.generate(type.length, (index) {
+                  return TextButton(
                       onPressed: () {
                         setState(() {
-                          isSelected = !isSelected;
+                          isSelected = index;
                           print(isSelected);
+                          print(index);
                         });
                       },
                       child: Text(
                         type[index],
-                        style: TextStyle(
-                            color: isSelected
-                                ? Colors.deepPurple
-                                : Colors.black38),
-                      ),
-                    ));
-              },
-            ),
-          ),
+                        style: tStyle(isSelected == index),
+                      ));
+                }),
+              )),
           SizedBox(
             height: size.height * 0.2,
             width: double.infinity,
