@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:task1/Bloc_Login/login_cubit.dart';
-import 'package:task1/StartPage.dart';
+import 'package:task1/Bloc/Bloc_details/details_cubit.dart';
+import 'package:task1/Bloc/Bloc_home/home_cubit.dart';
+import 'package:task1/Bloc/Bloc_profile/profile_cubit.dart';
+import 'package:task1/Screen/StartPage.dart';
 
+import 'Bloc/Bloc_Login/login_cubit.dart';
 import 'l10n/app_localizations.dart';
 
 void main() {
@@ -16,8 +19,27 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => LoginCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) {
+            return LoginCubit();
+          },
+        ),
+        BlocProvider(
+          create: (context) => HomeCubit(),
+        ),
+        BlocProvider(
+          create: (context) {
+            return ProfileCubit();
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            return DetailsCubit();
+          },
+        ),
+      ],
       child: MaterialApp(
         localizationsDelegates: const [
           AppLocalizations.delegate,
