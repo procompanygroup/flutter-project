@@ -21,16 +21,13 @@ class _RegisterState extends State<Register> {
   final picker = ImagePicker();
   bool uploading = false;
   Future? upload() async {
-    String token = "";
     var ur = "https://oras.orasweb.com/project/api/users/saveImage";
     if (imagePath == "") {
       return null;
     } else {
-      await SharedPreferences.getInstance().then((value) {
-        setState(() {
-          token = value.getString("access_token")!;
-        });
-      });
+      String? token;
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      token = await prefs.getString("token");
       try {
         var postUri = Uri.parse(ur);
         http.MultipartRequest request = http.MultipartRequest("Post", postUri);
@@ -235,7 +232,7 @@ class _RegisterState extends State<Register> {
                                 height: 50,
                                 child: ElevatedButton(
                                     onPressed: () {
-                                      Navigator.push(
+                                      Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>

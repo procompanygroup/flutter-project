@@ -10,7 +10,7 @@ class TabScreen extends StatefulWidget {
 }
 
 class _TabScreenState extends State<TabScreen> {
-  final page = [const Home(), null, Profile()];
+  final page = [const Home(), Profile()];
   int _selectedPage = 0;
   void _selectPage(int value) {
     setState(() {
@@ -30,7 +30,6 @@ class _TabScreenState extends State<TabScreen> {
         onTap: _selectPage,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.cabin_sharp), label: ""),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
         ],
       ),

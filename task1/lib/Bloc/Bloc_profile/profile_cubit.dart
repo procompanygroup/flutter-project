@@ -3,19 +3,14 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task1/data/personal_information.dart';
 
 part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
-  String token = "";
   ProfileCubit() : super(ProfileInitial());
-  Future<void> profileInfo() async {
+  Future<void> profileInfo(String token) async {
     try {
-      await SharedPreferences.getInstance().then((value) {
-        token = value.getString("access_token")!;
-      });
       print(token);
       var response = await http.post(
           Uri.parse('https://oras.orasweb.com/project/api/users/getUserByName'),
@@ -41,8 +36,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  Future? upload(String imagePath, int id) async {
-    String token = "";
+  Future? upload(String imagePath, int id, String token) async {
     var ur = "https://oras.orasweb.com/project/api/users/saveImage";
     try {
       var postUri = Uri.parse(ur);
@@ -54,6 +48,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       request.files.add(multipartFile);
       http.StreamedResponse response = await request.send();
       print(response.statusCode);
+      emit(UploadedImageState());
     } catch (error) {
       print(error);
     }

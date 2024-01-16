@@ -131,15 +131,18 @@ class Details extends StatelessWidget {
                         text("Owner", homeDetails!.owner),
                         text("Implementation Period",
                             "${homeDetails!.periodTime} month"),
-                        text("Total Price", homeDetails!.price),
+                        text("Price", homeDetails!.price),
                         Center(
                           child: SizedBox(
                             width: size.width * 0.65,
                             height: size.height * 0.07,
                             child: ElevatedButton(
                                 onPressed: () {
+                                  print(homeDetails!.location);
+
                                   Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => const Location(),
+                                    builder: (context) =>
+                                        Location(homeDetails!.location),
                                   ));
                                   // fetchData();
                                 },

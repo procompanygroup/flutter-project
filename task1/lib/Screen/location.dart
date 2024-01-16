@@ -4,38 +4,92 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Location extends StatefulWidget {
-  const Location({super.key});
+  final String location;
+
+  const Location(this.location, {Key? key}) : super(key: key);
 
   @override
-  State<Location> createState() => _LocationState();
+  State<Location> createState() => _LocationState(location);
 }
 
 class _LocationState extends State<Location> {
+  late String location;
+  double latitude = 0.0, longitude = 0.0;
   final Completer<GoogleMapController> _controller = Completer();
-  static const CameraPosition _initialCameraposition =
-      CameraPosition(target: LatLng(33.515343, 36.289590), zoom: 17.4746);
-  LatLng currentPosition = _initialCameraposition.target;
+
+  _LocationState(this.location);
+
+  @override
+  void initState() {
+    super.initState();
+    List<String> coordinates = location.substring(1).split(',');
+    latitude = double.tryParse(coordinates[0]) ?? 0.0;
+    longitude = double.tryParse(coordinates[1]) ?? 0.0;
+  }
+
   @override
   Widget build(BuildContext context) {
+    CameraPosition initialCameraPosition =
+        CameraPosition(target: LatLng(latitude, longitude), zoom: 18.4746);
+    //LatLng currentPosition = initialCameraPosition.target;
     return Scaffold(
-        body: Stack(
-      children: [
-        GoogleMap(
-          initialCameraPosition: _initialCameraposition,
-          mapType: MapType.normal,
-          onMapCreated: (GoogleMapController controller) {
-            setState(() {
+      body: Stack(
+        children: [
+          GoogleMap(
+            initialCameraPosition: initialCameraPosition,
+            mapType: MapType.normal,
+            onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
-            });
-          },
-          onCameraMove: (CameraPosition newpos) {
-            setState(() {
-              currentPosition = newpos.target;
-            });
-          },
-          // markers: ,
-        )
-      ],
-    ));
+            },
+            markers: <Marker>{
+              Marker(
+                markerId: const MarkerId("0"),
+                position: LatLng(latitude, longitude),
+                draggable: true,
+                icon: BitmapDescriptor.defaultMarker,
+              ),
+            },
+            onTap: (LatLng position) {
+              setState(() {
+                latitude = position.latitude;
+                longitude = position.longitude;
+              });
+              final markerId = MarkerId(DateTime.now().toString());
+              Marker(
+                markerId: markerId,
+                position: LatLng(latitude, longitude),
+                draggable: true,
+                icon: BitmapDescriptor.defaultMarker,
+              );
+              _controller.future.then((controller) {
+                controller.showMarkerInfoWindow(markerId);
+              });
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.all(35.0),
+            child: IconButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                icon: const Icon(Icons.arrow_back)),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(58.0, 600, 58, 0),
+            child: Center(
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all(Colors.deepPurple.shade300),
+                ),
+                child:
+                    const Text("Save", style: TextStyle(color: Colors.white)),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

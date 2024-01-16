@@ -14,7 +14,6 @@ class StartPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.deepPurple.shade300,
       body: Column(
-        //mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
             padding: EdgeInsets.only(
@@ -35,7 +34,7 @@ class StartPage extends StatelessWidget {
             height: size.height * 0.06,
             child: ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (context) => LogIn(),
                   ));
                 },
@@ -49,7 +48,7 @@ class StartPage extends StatelessWidget {
           ),
           TextButton(
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (context) => const Register(),
                 ));
               },

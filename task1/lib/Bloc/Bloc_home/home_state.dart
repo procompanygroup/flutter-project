@@ -21,7 +21,6 @@ class HomeSuccess extends HomeState {
 class HomeFailure extends HomeState {}
 
 class HomeCategorySelected extends HomeState {
-  @override
   final int isSelected;
   @override
   final List<HomeData> filterHomes;

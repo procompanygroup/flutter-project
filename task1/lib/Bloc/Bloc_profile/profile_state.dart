@@ -9,6 +9,8 @@ class ProfileInitial extends ProfileState {}
 
 class ProfileLoading extends ProfileState {}
 
+class UploadedImageState extends ProfileState {}
+
 class ProfileSuccess extends ProfileState {
   @override
   final Personal fetchedPerson;

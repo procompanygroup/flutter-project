@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'login_state.dart';
 
@@ -23,6 +24,11 @@ class LoginCubit extends Cubit<LoginState> {
       final data = response.body;
       final user = jsonDecode(data) as Map<String, dynamic>;
       //print(user[' token']);
+      String? token;
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString("token", user[' token']);
+      token = prefs.getString("token");
+      print(token);
       emit(LoginSuccess(user[' token']));
     } else {
       // Failed login

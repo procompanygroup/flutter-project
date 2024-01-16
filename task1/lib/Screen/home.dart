@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:task1/Bloc/Bloc_Login/login_cubit.dart';
 import 'package:task1/Bloc/Bloc_home/home_cubit.dart';
 import 'package:task1/Screen/details.dart';
 import 'package:task1/data/all_home.dart';
@@ -13,6 +14,19 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  String token = "";
+  Future<void> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    print(prefs.getString("token"));
+    token = prefs.getString("token") ?? "";
+  }
+
+  @override
+  void initState() {
+    getToken();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -42,8 +56,8 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ));
-    String? token = context.read<LoginCubit>().state.token;
-    context.read<HomeCubit>().fetchHomes(token!);
+    //  String? token = context.read<LoginCubit>().state.token;
+    context.read<HomeCubit>().fetchHomes(token);
     return Scaffold(
       backgroundColor: Colors.black12,
       body: BlocBuilder<HomeCubit, HomeState>(
@@ -53,7 +67,7 @@ class _HomeState extends State<Home> {
             // print("Loading");
           } else if (state is HomeSuccess) {
             allHome = state.fetchedHomes;
-            print(token);
+            // print(token);
             // print("Success");
           } else if (state is HomeFailure) {
             print("Failure");
@@ -117,91 +131,105 @@ class _HomeState extends State<Home> {
                   ],
                 ),
               ),
-              Expanded(
-                child: GridView.builder(
-                  itemCount: allHome.length,
-                  padding: const EdgeInsets.all(12),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2),
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                Details(allHome[index].id, token),
-                          ));
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(40),
-                              color: Colors.white),
-                          height: size.height * 0.1,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
+              state is HomeLoading
+                  ? const CircularProgressIndicator()
+                  : Expanded(
+                      child: GridView.builder(
+                        itemCount: allHome.length,
+                        padding: const EdgeInsets.all(12),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2),
+                        itemBuilder: (BuildContext context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      Details(allHome[index].id, token),
+                                ));
+                              },
+                              child: Container(
                                 decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image:
-                                            NetworkImage(allHome[index].image),
-                                        fit: BoxFit.cover),
                                     borderRadius: BorderRadius.circular(40),
                                     color: Colors.white),
-                                height: size.height * 0.12,
-                              ),
-                              Row(
-                                children: [
-                                  Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(2.0),
-                                        child: Text(
-                                          allHome[index].name,
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 10),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 12.0),
-                                        child: Text(
-                                          "${allHome[index].periodtime} month",
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 10,
-                                              color: Colors.black38),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      context
-                                          .read<HomeCubit>()
-                                          .isFavorite(index);
-                                    },
-                                    icon: Icon(
-                                      Icons.favorite_border,
-                                      color: allHome[index].isFavorite == 1
-                                          ? Colors.deepPurple
-                                          : Colors.black38,
+                                height: size.height * 0.1,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                  allHome[index].image),
+                                              fit: BoxFit.cover),
+                                          borderRadius:
+                                              BorderRadius.circular(40),
+                                          color: Colors.white),
+                                      height: size.height * 0.12,
                                     ),
-                                    //disabledColor: Colors.black,
-                                    //isSelected: select,
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
+                                    Row(
+                                      children: [
+                                        Column(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(2.0),
+                                              child: Text(
+                                                allHome[index].name,
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 10),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 12.0),
+                                              child: Text(
+                                                "${allHome[index].periodtime} month",
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 10,
+                                                    color: Colors.black38),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        IconButton(
+                                          onPressed: () {
+                                            context
+                                                .read<HomeCubit>()
+                                                .isFavorite(index);
+                                            Fluttertoast.showToast(
+                                              msg: token,
+                                              toastLength: Toast.LENGTH_SHORT,
+                                              gravity: ToastGravity.BOTTOM,
+                                              timeInSecForIosWeb: 1,
+                                              backgroundColor: Colors.black54,
+                                              textColor: Colors.white,
+                                            );
+                                          },
+                                          icon: Icon(
+                                            Icons.favorite_border,
+                                            color:
+                                                allHome[index].isFavorite == 1
+                                                    ? Colors.deepPurple
+                                                    : Colors.black38,
+                                          ),
+                                          //disabledColor: Colors.black,
+                                          //isSelected: select,
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-              )
+                    )
             ],
           );
         },

@@ -104,11 +104,12 @@ class LogIn extends StatelessWidget {
                                 if (state is LoginLoading) {
                                   _isLoading = true;
                                 } else if (state is LoginSuccess) {
-                                  Navigator.push(
+                                  Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => const TabScreen(),
                                       ));
+                                  // _isLoading = false;
                                 } else if (state is LoginFailure) {
                                   showDialog(
                                     context: context,
@@ -125,7 +126,7 @@ class LogIn extends StatelessWidget {
                                       ],
                                     ),
                                   );
-                                  _isLoading = false;
+                                  //_isLoading = false;
                                 }
                               },
                               child: SizedBox(

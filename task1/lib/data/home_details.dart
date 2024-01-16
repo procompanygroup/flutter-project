@@ -22,7 +22,7 @@ class HomeDetails {
         desc: json['desc'] != null ? json['desc'].toString() : '',
         periodTime:
             json['periodtime'] != null ? json['periodtime'].toString() : '',
-        location: json['Location'] != null ? json['Location'].toString() : '',
+        location: json['location'] != null ? json['location'].toString() : '',
         price: json['price'] != null ? json['price'].toString() : '',
         realModel:
             json['realmodel'] != null ? json['realmodel'].toString() : '',
