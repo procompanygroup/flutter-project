@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:task1/Bloc/Bloc_home/home_cubit.dart';
 import 'package:task1/Screen/details.dart';
@@ -14,19 +12,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  String token = "";
-  Future<void> getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    print(prefs.getString("token"));
-    token = prefs.getString("token") ?? "";
-  }
-
-  @override
-  void initState() {
-    getToken();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -56,19 +41,15 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ));
-    //  String? token = context.read<LoginCubit>().state.token;
-    context.read<HomeCubit>().fetchHomes(token);
+
+    context.read<HomeCubit>().fetchHomes();
     return Scaffold(
       backgroundColor: Colors.black12,
       body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
           if (state is HomeLoading) {
-            //print(token);
-            // print("Loading");
           } else if (state is HomeSuccess) {
             allHome = state.fetchedHomes;
-            // print(token);
-            // print("Success");
           } else if (state is HomeFailure) {
             print("Failure");
           } else if (state is HomeCategorySelected) {
@@ -147,7 +128,7 @@ class _HomeState extends State<Home> {
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) =>
-                                      Details(allHome[index].id, token),
+                                      Details(allHome[index].id),
                                 ));
                               },
                               child: Container(
@@ -201,14 +182,6 @@ class _HomeState extends State<Home> {
                                             context
                                                 .read<HomeCubit>()
                                                 .isFavorite(index);
-                                            Fluttertoast.showToast(
-                                              msg: token,
-                                              toastLength: Toast.LENGTH_SHORT,
-                                              gravity: ToastGravity.BOTTOM,
-                                              timeInSecForIosWeb: 1,
-                                              backgroundColor: Colors.black54,
-                                              textColor: Colors.white,
-                                            );
                                           },
                                           icon: Icon(
                                             Icons.favorite_border,

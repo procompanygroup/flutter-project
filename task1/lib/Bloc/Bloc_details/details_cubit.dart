@@ -3,15 +3,19 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task1/data/home_details.dart';
 
 part 'details_state.dart';
 
 class DetailsCubit extends Cubit<DetailsState> {
   DetailsCubit() : super(DetailsInitial());
-  void fetchDetails(int id, String token) async {
+  void fetchDetails(int id) async {
     HomeDetails fetchedDetails;
     try {
+      final prefs = await SharedPreferences.getInstance();
+      print(prefs.getString("token"));
+      String token = prefs.getString("token")!;
       print(token);
       var response = await http.post(
           Uri.parse('https://oras.orasweb.com/project/api/realstate/iteminfo'),

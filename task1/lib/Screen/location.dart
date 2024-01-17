@@ -29,6 +29,7 @@ class _LocationState extends State<Location> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     CameraPosition initialCameraPosition =
         CameraPosition(target: LatLng(latitude, longitude), zoom: 18.4746);
     //LatLng currentPosition = initialCameraPosition.target;
@@ -75,16 +76,22 @@ class _LocationState extends State<Location> {
                 icon: const Icon(Icons.arrow_back)),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(58.0, 600, 58, 0),
+            padding: EdgeInsets.only(top: size.height * 0.7),
             child: Center(
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all(Colors.deepPurple.shade300),
+              child: SizedBox(
+                width: size.width * 0.4,
+                height: size.height * 0.06,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(Colors.deepPurple.shade300),
+                  ),
+                  child:
+                      const Text("Save", style: TextStyle(color: Colors.white)),
                 ),
-                child:
-                    const Text("Save", style: TextStyle(color: Colors.white)),
               ),
             ),
           )

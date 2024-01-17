@@ -21,10 +21,19 @@ class HomeSuccess extends HomeState {
 class HomeFailure extends HomeState {}
 
 class HomeCategorySelected extends HomeState {
+  @override
   final int isSelected;
   @override
   final List<HomeData> filterHomes;
   HomeCategorySelected(this.isSelected, this.filterHomes);
 }
 
-class HomeIsFavorite extends HomeState {}
+class HomeIsFavorite extends HomeState {
+  @override
+  final int isSelected;
+  @override
+  final List<HomeData> filterHomes;
+  @override
+  final List<HomeData> fetchedHomes;
+  HomeIsFavorite(this.isSelected, this.filterHomes, this.fetchedHomes);
+}

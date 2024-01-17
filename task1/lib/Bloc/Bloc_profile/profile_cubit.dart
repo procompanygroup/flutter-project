@@ -3,14 +3,18 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task1/data/personal_information.dart';
 
 part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit() : super(ProfileInitial());
-  Future<void> profileInfo(String token) async {
+  Future<void> profileInfo() async {
     try {
+      final prefs = await SharedPreferences.getInstance();
+      print(prefs.getString("token"));
+      String token = prefs.getString("token")!;
       print(token);
       var response = await http.post(
           Uri.parse('https://oras.orasweb.com/project/api/users/getUserByName'),

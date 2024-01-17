@@ -5,9 +5,8 @@ import 'package:task1/Screen/location.dart';
 import 'package:task1/data/home_details.dart';
 
 class Details extends StatelessWidget {
-  final String token;
   final int id;
-  Details(this.id, this.token, {super.key});
+  Details(this.id, {super.key});
   @override
   Widget build(BuildContext context) {
     late HomeDetails? homeDetails = HomeDetails(
@@ -20,7 +19,7 @@ class Details extends StatelessWidget {
         id: id,
         location: "",
         image: "");
-    context.read<DetailsCubit>().fetchDetails(id, token);
+    context.read<DetailsCubit>().fetchDetails(id);
     final size = MediaQuery.of(context).size;
 
     Widget text(String a, String b) {
