@@ -184,7 +184,9 @@ class _HomeState extends State<Home> {
                                                 .isFavorite(index);
                                           },
                                           icon: Icon(
-                                            Icons.favorite_border,
+                                            allHome[index].isFavorite == 0
+                                                ? Icons.favorite_border
+                                                : Icons.favorite,
                                             color:
                                                 allHome[index].isFavorite == 1
                                                     ? Colors.deepPurple

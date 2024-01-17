@@ -10,7 +10,7 @@ import '../../data/all_home.dart';
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
-  HomeCubit() : super(HomeInitial());
+  HomeCubit() : super(HomeLoading());
   List<HomeData> fetchedHomes = [];
   List<HomeData> filterHomes = [];
   int isSelected = 0;
@@ -41,13 +41,11 @@ class HomeCubit extends Cubit<HomeState> {
       }
     }
 
-    // emit(HomeCategorySelected(index, filterHomes));
     emit(HomeIsFavorite(isSelected, filterHomes, fetchedHomes));
   }
 
   void fetchHomes() async {
     try {
-      //print(token);
       final prefs = await SharedPreferences.getInstance();
       print(prefs.getString("token"));
       String token = prefs.getString("token")!;
@@ -58,6 +56,9 @@ class HomeCubit extends Cubit<HomeState> {
       emit(HomeLoading());
       if (response.statusCode == 200) {
         var data = json.decode(response.body)["list"];
+        fetchedHomes.clear();
+        isSelected = 0;
+        filterHomes.clear();
         for (var item in data) {
           HomeData home = HomeData.fromJson(item);
           fetchedHomes.add(home);

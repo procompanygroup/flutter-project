@@ -1,12 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task1/Bloc/Bloc_profile/profile_cubit.dart';
 import 'package:task1/data/personal_information.dart';
 
-import '../Bloc/Bloc_Login/login_cubit.dart';
 import '../l10n/app_localizations.dart';
 
 class Profile extends StatefulWidget {
@@ -218,13 +219,11 @@ class _ProfileState extends State<Profile> {
                                               TextInputType.visiblePassword,
                                         ),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 48.0, right: 48),
-                                        child: SizedBox(
-                                          width: size.width * 0.65,
-                                          height: size.height * 0.06,
-                                          child: ElevatedButton(
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          ElevatedButton(
                                               onPressed: () {},
                                               style: ButtonStyle(
                                                 backgroundColor:
@@ -239,7 +238,27 @@ class _ProfileState extends State<Profile> {
                                                     color: Colors.white,
                                                     fontSize: 20),
                                               )),
-                                        ),
+                                          ElevatedButton(
+                                              onPressed: () async {
+                                                final prefs =
+                                                    await SharedPreferences
+                                                        .getInstance();
+                                                //print(prefs.getString("token"));
+                                                prefs.clear();
+                                                SystemNavigator.pop();
+                                              },
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateProperty.all(
+                                                        Colors.red),
+                                              ),
+                                              child: const Text(
+                                                "Log out",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 20),
+                                              ))
+                                        ],
                                       ),
                                     ],
                                   ),
@@ -252,24 +271,34 @@ class _ProfileState extends State<Profile> {
                       Center(
                         child: Column(
                           children: [
-                            Container(
-                              width: 140,
-                              height: 140,
-                              decoration: BoxDecoration(
-                                  image: imagePath == ""
-                                      ? DecorationImage(
-                                          image: NetworkImage(person.image))
-                                      : DecorationImage(
-                                          image: FileImage(image)),
-                                  borderRadius: BorderRadius.circular(80),
-                                  color: Colors.blueGrey),
-                              child: IconButton(
-                                  onPressed: () {
-                                    getImagefromGallery();
-                                    print(imagePath);
-                                  },
-                                  icon: const Icon(Icons.camera_alt_outlined)),
-                            ),
+                            Stack(children: [
+                              Container(
+                                width: 140,
+                                height: 140,
+                                decoration: BoxDecoration(
+                                    image: imagePath == ""
+                                        ? DecorationImage(
+                                            image: NetworkImage(person.image))
+                                        : DecorationImage(
+                                            image: FileImage(image)),
+                                    borderRadius: BorderRadius.circular(80),
+                                    color: Colors.blueGrey),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: size.width * 0.25,
+                                    top: size.height * 0.12),
+                                child: IconButton(
+                                    onPressed: () {
+                                      getImagefromGallery();
+                                      print(imagePath);
+                                    },
+                                    icon: const Icon(
+                                      Icons.camera_alt,
+                                      color: Colors.deepPurple,
+                                    )),
+                              ),
+                            ]),
                             Text(
                               person.userName,
                               style: const TextStyle(
@@ -294,13 +323,12 @@ class _ProfileState extends State<Profile> {
   String imagePath = "";
 
   getImagefromGallery() async {
-    String token = context.read<LoginCubit>().state.token!;
     final pickedfile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedfile != null) {
       setState(() {
         image = File(pickedfile.path);
         imagePath = pickedfile.path;
-        context.read<ProfileCubit>().upload(imagePath, person.id, token);
+        context.read<ProfileCubit>().upload(imagePath, person.id);
         // print(image);
       });
       setState(() {

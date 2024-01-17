@@ -40,10 +40,13 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  Future? upload(String imagePath, int id, String token) async {
+  Future? upload(String imagePath, int id) async {
     var ur = "https://oras.orasweb.com/project/api/users/saveImage";
     try {
       var postUri = Uri.parse(ur);
+      final prefs = await SharedPreferences.getInstance();
+      print(prefs.getString("token"));
+      String token = prefs.getString("token")!;
       http.MultipartRequest request = http.MultipartRequest("Post", postUri);
       request.headers['Authorization'] = 'Bearer $token';
       request.fields['id'] = "$id";
